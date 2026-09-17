@@ -63,3 +63,39 @@ void GPIO_Init(GPIO_Config_t *config)
     config->port->PUPDR |=
         ((uint32_t)config->pull << (pin * 2U));
 }
+
+void GPIO_SetPin(GPIO_TypeDef *port, uint8_t pin)
+{
+    port->BSRR = (1U << pin);
+}
+
+void GPIO_ResetPin(GPIO_TypeDef *port, uint8_t pin)
+{
+    port->BSRR = (1U << (pin + 16U));
+}
+
+void GPIO_WritePin(GPIO_TypeDef *port,
+                   uint8_t pin,
+                   GPIO_PinState_t state)
+{
+    if (state == GPIO_PIN_SET)
+    {
+        GPIO_SetPin(port, pin);
+    }
+    else
+    {
+        GPIO_ResetPin(port, pin);
+    }
+}
+
+void GPIO_TogglePin(GPIO_TypeDef *port, uint8_t pin)
+{
+    if (port->ODR & (1U << pin))
+    {
+        GPIO_ResetPin(port, pin);
+    }
+    else
+    {
+        GPIO_SetPin(port, pin);
+    }
+}
