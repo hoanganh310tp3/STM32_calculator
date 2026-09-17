@@ -1,6 +1,6 @@
 #include "gpio.h"
 #include "rcc.h"
-
+#include "systick.h"
 
 void GPIO_Init(GPIO_Config_t *config)
 {
@@ -98,4 +98,45 @@ void GPIO_TogglePin(GPIO_TypeDef *port, uint8_t pin)
     {
         GPIO_SetPin(port, pin);
     }
+}
+
+GPIO_PinState_t GPIO_ReadPin(GPIO_TypeDef *port,
+                              uint8_t pin)
+{
+    if (port->IDR & (1U << pin))
+    {
+        return GPIO_PIN_SET;
+    }
+
+    return GPIO_PIN_RESET;
+}
+
+uint8_t GPIO_ButtonPressed(GPIO_TypeDef *port,
+                           uint8_t pin)
+{
+    static GPIO_PinState_t previous_state =
+        GPIO_PIN_SET;
+
+    GPIO_PinState_t current_state =
+        GPIO_ReadPin(port, pin);
+
+
+    if ((previous_state == GPIO_PIN_SET) &&
+        (current_state == GPIO_PIN_RESET))
+    {
+        SysTick_DelayMs(20);
+
+        if (GPIO_ReadPin(port, pin) ==
+            GPIO_PIN_RESET)
+        {
+            previous_state = GPIO_PIN_RESET;
+
+            return 1;
+        }
+    }
+
+
+    previous_state = current_state;
+
+    return 0;
 }
