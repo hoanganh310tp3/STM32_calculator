@@ -6,9 +6,7 @@ void GPIO_Init(GPIO_Config_t *config)
 {
     uint8_t pin = config->pin;
 
-    /*
-     * Enable GPIO peripheral clock
-     */
+    /* Enable GPIO peripheral clock */
     RCC_EnableGPIOClock(config->port);
 
 
@@ -23,9 +21,7 @@ void GPIO_Init(GPIO_Config_t *config)
      */
 
     config->port->MODER &= ~(3U << (pin * 2U));
-
-    config->port->MODER |=
-        ((uint32_t)config->mode << (pin * 2U));
+    config->port->MODER |= ((uint32_t)config->mode << (pin * 2U));
 
 
     /*
@@ -35,9 +31,7 @@ void GPIO_Init(GPIO_Config_t *config)
      */
 
     config->port->OTYPER &= ~(1U << pin);
-
-    config->port->OTYPER |=
-        ((uint32_t)config->output_type << pin);
+    config->port->OTYPER |= ((uint32_t)config->output_type << pin);
 
 
     /*
@@ -47,9 +41,7 @@ void GPIO_Init(GPIO_Config_t *config)
      */
 
     config->port->OSPEEDR &= ~(3U << (pin * 2U));
-
-    config->port->OSPEEDR |=
-        ((uint32_t)config->speed << (pin * 2U));
+    config->port->OSPEEDR |= ((uint32_t)config->speed << (pin * 2U));
 
 
     /*
@@ -59,9 +51,7 @@ void GPIO_Init(GPIO_Config_t *config)
      */
 
     config->port->PUPDR &= ~(3U << (pin * 2U));
-
-    config->port->PUPDR |=
-        ((uint32_t)config->pull << (pin * 2U));
+    config->port->PUPDR |= ((uint32_t)config->pull << (pin * 2U));
 }
 
 void GPIO_SetPin(GPIO_TypeDef *port, uint8_t pin)
@@ -114,27 +104,21 @@ GPIO_PinState_t GPIO_ReadPin(GPIO_TypeDef *port,
 uint8_t GPIO_ButtonPressed(GPIO_TypeDef *port,
                            uint8_t pin)
 {
-    static GPIO_PinState_t previous_state =
-        GPIO_PIN_SET;
+    static GPIO_PinState_t previous_state = GPIO_PIN_SET;
 
-    GPIO_PinState_t current_state =
-        GPIO_ReadPin(port, pin);
+    GPIO_PinState_t current_state = GPIO_ReadPin(port, pin);
 
 
-    if ((previous_state == GPIO_PIN_SET) &&
-        (current_state == GPIO_PIN_RESET))
+    if ((previous_state == GPIO_PIN_SET) && (current_state == GPIO_PIN_RESET))
     {
         SysTick_DelayMs(20);
 
-        if (GPIO_ReadPin(port, pin) ==
-            GPIO_PIN_RESET)
+        if (GPIO_ReadPin(port, pin) == GPIO_PIN_RESET)
         {
             previous_state = GPIO_PIN_RESET;
-
             return 1;
         }
     }
-
 
     previous_state = current_state;
 

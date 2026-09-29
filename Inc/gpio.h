@@ -74,13 +74,11 @@ void GPIO_TogglePin(GPIO_TypeDef *port, uint8_t pin);
 
 /* Input */
 
-GPIO_PinState_t GPIO_ReadPin(GPIO_TypeDef *port,
-                              uint8_t pin);
+GPIO_PinState_t GPIO_ReadPin(GPIO_TypeDef *port, uint8_t pin);
 
 
 /* Button */
 
-uint8_t GPIO_ButtonPressed(GPIO_TypeDef *port,
-                           uint8_t pin);
+uint8_t GPIO_ButtonPressed(GPIO_TypeDef *port, uint8_t pin);
 
 #endif

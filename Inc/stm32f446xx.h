@@ -25,6 +25,9 @@ typedef struct
     volatile uint32_t AHB1ENR;     // 0x30
     volatile uint32_t AHB2ENR;     // 0x34
     volatile uint32_t AHB3ENR;     // 0x38
+    uint32_t RESERVED2;            // 0x3C
+    volatile uint32_t APB1ENR;     // 0x40
+    volatile uint32_t APB2ENR;     // 0x44
 } RCC_TypeDef;
 
 #define RCC ((RCC_TypeDef *)RCC_BASE)
@@ -84,6 +87,12 @@ typedef struct
 
 
 /* ============================================================
+ * RCC APB2ENR bits
+ * ============================================================ */
+#define RCC_APB2ENR_SYSCFGEN (1U << 14)
+
+
+/* ============================================================
  * SysTick
  * ============================================================ */
 
@@ -98,5 +107,38 @@ typedef struct
 } SysTick_TypeDef;
 
 #define SysTick ((SysTick_TypeDef *)SYSTICK_BASE)
+
+/* ============================================================
+ * SYSCFG
+ * ============================================================ */
+
+#define SYSCFG_BASE 0x40013800UL
+
+typedef struct
+{
+    volatile uint32_t MEMRMP;      // 0x00
+    volatile uint32_t PMC;         // 0x04
+    volatile uint32_t EXTICR[4];   // 0x08 - 0x14
+} SYSCFG_TypeDef;
+
+#define SYSCFG ((SYSCFG_TypeDef *)SYSCFG_BASE)
+
+/* ============================================================
+ * EXTI
+ * ============================================================ */
+
+#define EXTI_BASE 0x40013C00UL
+
+typedef struct
+{
+    volatile uint32_t IMR;     // Interrupt mask register
+    volatile uint32_t EMR;     // Event mask register
+    volatile uint32_t RTSR;    // Rising trigger selection
+    volatile uint32_t FTSR;    // Falling trigger selection
+    volatile uint32_t SWIER;   // Software interrupt event
+    volatile uint32_t PR;      // Pending register
+} EXTI_TypeDef;
+
+#define EXTI ((EXTI_TypeDef *)EXTI_BASE)
 
 #endif

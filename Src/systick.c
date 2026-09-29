@@ -19,8 +19,7 @@ void SysTick_Init(uint32_t clock_hz)
      * clock_hz / 1000
      */
 
-    SysTick->LOAD =
-        (clock_hz / 1000U) - 1U;
+    SysTick->LOAD = (clock_hz / 1000U) - 1U;
 
 
     /*
@@ -37,9 +36,7 @@ void SysTick_Init(uint32_t clock_hz)
      * bit 2 = CLKSOURCE
      */
 
-    SysTick->CTRL =
-          (1U << 0)
-        | (1U << 2);
+    SysTick->CTRL = (1U << 0) | (1U << 2);
 }
 
 

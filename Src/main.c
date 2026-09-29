@@ -58,9 +58,8 @@ int main(void)
 
     while (1)
     {
-        if (GPIO_ButtonPressed(GPIOA, 0))
-        {
-            GPIO_TogglePin(GPIOA, 5);
-        }
+        /*
+         * CPU doesn't need to poll the button.
+         */
     }
 }
