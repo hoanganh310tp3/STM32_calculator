@@ -1,51 +1,39 @@
 #include "exti.h"
-
-#define NVIC_ISER0 (*(volatile uint32_t *)0xE000E100UL)
+#include "nvic.h"
 
 void EXTI_Init(void)
 {
-    /*
-     * Select GPIOA as source for EXTI0.
-     *
-     * EXTICR[0] bits [3:0]
-     *
-     * 0000 = GPIOA
-     */
+    // Enable clock cho SYSCFG
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 
+    // EXTI0 source = GPIOA
     SYSCFG->EXTICR[0] &= ~(0xFU << 0);
 
-
-    /*
-     * Enable EXTI0 interrupt.
-     */
-
-    EXTI->IMR |= (1U << 0);
-
-
-    /*
-     * Enable falling-edge trigger.
-     */
-
+    // Falling edge
     EXTI->FTSR |= (1U << 0);
 
+    // Not using rising edge
+    EXTI->RTSR &= ~(1U << 0);
 
-    /*
-     * Enable EXTI0 IRQ in NVIC.
-     *
-     * EXTI0_IRQn = 6
-     */
+    // Clear pending old flag
+    EXTI->PR = (1U << 0);
 
-    NVIC_ISER0 |= (1U << 6);
+    // Enable EXTI line 0
+    EXTI->IMR |= (1U << 0);
+
+    // Configure NVIC
+    NVIC_EnableIRQ(6);
+    NVIC_SetPriority(6, 2);
 }
+
+volatile uint8_t button_event = 0;
 
 void EXTI0_IRQHandler(void)
 {
     if (EXTI->PR & (1U << 0))
     {
-        /* Clear pending flag */
         EXTI->PR = (1U << 0);
 
-        /* Button event */
-        GPIO_TogglePin(GPIOA, 5);
+        button_event = 1;
     }
 }

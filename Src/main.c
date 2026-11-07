@@ -58,8 +58,16 @@ int main(void)
 
     while (1)
     {
-        /*
-         * CPU doesn't need to poll the button.
-         */
+        if (button_event)
+        {
+            button_event = 0;
+
+            SysTick_DelayMs(20);
+
+            if (GPIO_ReadPin(GPIOA, 0) == GPIO_PIN_RESET)
+            {
+                GPIO_TogglePin(GPIOA, 5);
+            }
+        }
     }
 }
