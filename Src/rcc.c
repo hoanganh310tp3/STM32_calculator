@@ -35,3 +35,8 @@ void RCC_EnableGPIOClock(GPIO_TypeDef *port)
         RCC->AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
     }
 }
+
+void RCC_EnableTIM2Clock(void)
+{
+    RCC->APB1ENR |= (1U << 0);
+}

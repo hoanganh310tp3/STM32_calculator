@@ -141,6 +141,10 @@ typedef struct
 
 #define EXTI ((EXTI_TypeDef *)EXTI_BASE)
 
+/* ============================================================
+ * NVIC
+ * ============================================================ */
+
 #define NVIC_BASE       0xE000E100UL
 typedef struct
 {
@@ -167,5 +171,35 @@ typedef enum
 {
     EXTI0_IRQn = 6
 } IRQn_Type;
+
+/* ============================================================
+ * TIM2
+ * ============================================================ */
+
+#define TIM2_BASE 0x40000000UL
+
+typedef struct
+{
+    volatile uint32_t CR1;       // 0x00
+    volatile uint32_t CR2;       // 0x04
+    volatile uint32_t SMCR;      // 0x08
+    volatile uint32_t DIER;      // 0x0C
+    volatile uint32_t SR;        // 0x10
+    volatile uint32_t EGR;       // 0x14
+    volatile uint32_t CCMR1;     // 0x18
+    volatile uint32_t CCMR2;     // 0x1C
+    volatile uint32_t CCER;      // 0x20
+    volatile uint32_t CNT;       // 0x24
+    volatile uint32_t PSC;       // 0x28
+    volatile uint32_t ARR;       // 0x2C
+    uint32_t RESERVED0;          // 0x30
+    volatile uint32_t CCR1;      // 0x34
+    volatile uint32_t CCR2;      // 0x38
+    volatile uint32_t CCR3;      // 0x3C
+    volatile uint32_t CCR4;      // 0x40
+} TIM_TypeDef;
+
+#define TIM2 ((TIM_TypeDef *)TIM2_BASE)
+
 
 #endif

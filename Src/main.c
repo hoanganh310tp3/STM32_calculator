@@ -1,18 +1,10 @@
 #include "main.h"
 #include "gpio.h"
-#include "systick.h"
-
+#include "tim2.h"
 
 int main(void)
 {
-    /*
-     * LED
-     *
-     * Nucleo-F446RE:
-     * LD2 -> PA5
-     */
-    GPIO_Config_t led =
-    {
+    GPIO_Config_t led = {
         .port = GPIOA,
         .pin = 5,
         .mode = GPIO_MODE_OUTPUT,
@@ -21,53 +13,17 @@ int main(void)
         .pull = GPIO_NO_PULL
     };
 
-    /*
-     * External button
-     *
-     * PA0 --- button --- GND
-     *
-     * Internal pull-up
-     */
-    GPIO_Config_t button =
-    {
-        .port = GPIOA,
-        .pin = 0,
-        .mode = GPIO_MODE_INPUT,
-        .output_type = GPIO_OUTPUT_PUSH_PULL,
-        .speed = GPIO_SPEED_LOW,
-        .pull = GPIO_PULL_UP
-    };
-
-    /*
-     * Initialize GPIOs
-     */
     GPIO_Init(&led);
-    GPIO_Init(&button);
 
-    /*
-     * Initialize SysTick.
-     *
-     * Assuming CPU clock = 180 MHz.
-     */
+    // Assume TIM2 clock = 90 MHz
+    TIM2_Init1Hz(90000000U);
 
-    SysTick_Init(180000000U);
-
-    /*
-     * Main loop
-     */
+    TIM2_Start();
 
     while (1)
     {
-        if (button_event)
-        {
-            button_event = 0;
+        TIM2_WaitUpdate();
 
-            SysTick_DelayMs(20);
-
-            if (GPIO_ReadPin(GPIOA, 0) == GPIO_PIN_RESET)
-            {
-                GPIO_TogglePin(GPIOA, 5);
-            }
-        }
+        GPIO_TogglePin(GPIOA, 5);
     }
 }
