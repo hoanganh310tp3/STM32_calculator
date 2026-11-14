@@ -1,29 +1,41 @@
 #include "tim2.h"
 #include "stm32f446xx.h"
 #include "rcc.h"
-
-#define TIM2_COUNTER_FREQ 10000U
+#include "nvic.h"
 
 void TIM2_Init1Hz(uint32_t timer_clock_hz)
 {
     RCC_EnableTIM2Clock();
 
-    // Stop timer before config
     TIM2->CR1 &= ~(1U << 0);
 
-    // Set counter to 0
     TIM2->CNT = 0U;
 
-    // Counter clock = 10 kHz
-    TIM2->PSC = (timer_clock_hz / TIM2_COUNTER_FREQ) - 1U;
+    TIM2->PSC = (timer_clock_hz / 10000U) - 1U;
 
-    // Count 10000 tick to update event 1 Hz
     TIM2->ARR = 9999U;
 
-    // Load value PSC/ARR
     TIM2->EGR = (1U << 0);
 
-    // Delete UIF due to recent update generation
+    TIM2->SR &= ~(1U << 0);
+}
+
+void TIM2_EnableUpdateInterrupt(void)
+{
+    // Clear pending old flag on timer
+    TIM2->SR &= ~(1U << 0);
+
+    // Enable Update Interrupt
+    TIM2->DIER |= (1U << 0);
+
+    // Config NVIC
+    NVIC_SetPriority(TIM2_IRQn, 2);
+    NVIC_ClearPendingIRQ(TIM2_IRQn);
+    NVIC_EnableIRQ(TIM2_IRQn);
+}
+
+void TIM2_ClearUpdateFlag(void)
+{
     TIM2->SR &= ~(1U << 0);
 }
 
@@ -35,14 +47,4 @@ void TIM2_Start(void)
 void TIM2_Stop(void)
 {
     TIM2->CR1 &= ~(1U << 0);
-}
-
-void TIM2_WaitUpdate(void)
-{
-    while ((TIM2->SR & (1U << 0)) == 0U)
-    {
-    }
-
-    // Clear update flag
-    TIM2->SR &= ~(1U << 0);
 }

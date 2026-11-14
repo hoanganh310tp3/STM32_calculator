@@ -169,7 +169,8 @@ typedef struct
 #define NVIC ((NVIC_TypeDef *)NVIC_BASE)
 typedef enum
 {
-    EXTI0_IRQn = 6
+    EXTI0_IRQn = 6,
+    TIM2_IRQn =28
 } IRQn_Type;
 
 /* ============================================================
